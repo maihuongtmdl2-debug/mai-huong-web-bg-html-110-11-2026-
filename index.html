@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NẮM TRỌN QUYỀN NĂNG AI: NGHỆ THUẬT TẠO KỸ NĂNG (SKILLS)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-1: #0f172a;
+            --dark-2: #020617;
+            --gold: #fbbf24;
+            --coral: #f43f5e;
+            --emerald: #10b981;
+            --cyan: #06b6d4;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark-1), var(--dark-2));
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+        }
+
+        /* AMBIENT GLOW EFFECT */
+        #ambient-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 100vh;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.4) 0%, transparent 70%);
+            filter: blur(80px);
+            z-index: 0;
+            transition: background 1s ease;
+            pointer-events: none;
+        }
+
+        /* STRICT 16:9 LUXURY CONTAINER */
+        #presentation-container {
+            width: 1920px;
+            height: 1080px;
+            aspect-ratio: 16/9;
+            position: relative;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255,255,255,0.1);
+            overflow: hidden;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            transform-origin: center center;
+        }
+
+        /* TYPOGRAPHY */
+        .title {
+            font-size: 67px; /* ~3.5vw of 1920 */
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: linear-gradient(to right, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text {
+            font-size: 35px; /* ~1.8vw of 1920 */
+            font-weight: 400;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+        .highlight-gold { color: var(--gold); -webkit-text-fill-color: var(--gold); font-weight: 800; }
+        .highlight-coral { color: var(--coral); -webkit-text-fill-color: var(--coral); font-weight: 800; }
+
+        /* HEADER & NAVIGATION */
+        header, footer {
+            padding: 40px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+        footer { position: absolute; bottom: 0; width: 100%; }
+
+        .btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 24px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        .btn.active { background: var(--coral); border-color: #ff748e; box-shadow: 0 0 30px rgba(244, 63, 94, 0.5); }
+        .btn svg { width: 30px; height: 30px; fill: currentColor; }
+
+        /* SLIDES AREA */
+        #slides-area { flex: 1; position: relative; padding: 0 60px; }
+        .slide {
+            position: absolute;
+            inset: 0;
+            padding: 20px 60px 120px 60px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(0.95) translateY(20px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .slide.active { opacity: 1; visibility: visible; transform: scale(1) translateY(0); z-index: 2; }
+
+        /* 3D TILT & MICRO-INTERACTIONS */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            perspective: 1500px;
+        }
+        .glass-panel {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        /* IMAGE UPLOAD OVERLAY */
+        .image-container { position: relative; border-radius: 24px; overflow: hidden; width: 100%; height: 100%; border: 1px solid var(--glass-border); }
+        .image-container img { width: 100%; height: 100%; object-fit: cover; }
+        .upload-overlay {
+            position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s;
+        }
+        .image-container:hover .upload-overlay { opacity: 1; }
+        .upload-btn {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.4); color: #fff; padding: 15px 30px;
+            border-radius: 30px; font-size: 24px; cursor: pointer; transition: all 0.3s;
+        }
+        .upload-btn:hover { background: var(--coral); }
+        input[type="file"] { display: none; }
+
+        /* SLIDE 1: PARTICLES */
+        .particles-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+        .particle {
+            position: absolute; background: var(--cyan); border-radius: 50%; opacity: 0.5;
+            animation: float 10s infinite linear; filter: blur(3px);
+        }
+        @keyframes float { 0% { transform: translateY(1100px) rotate(0deg); } 100% { transform: translateY(-100px) rotate(360deg); } }
+
+        /* SLIDE 2: FLIP CARDS */
+        .flip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 40px; }
+        .flip-card { height: 500px; perspective: 1500px; cursor: pointer; }
+        .flip-inner {
+            position: relative; width: 100%; height: 100%; text-align: center;
+            transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d;
+        }
+        .flip-card:hover .flip-inner { transform: rotateY(180deg); }
+        .flip-front, .flip-back {
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+            border-radius: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4); border: 1px solid var(--glass-border);
+        }
+        .flip-front { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); }
+        .flip-back { background: linear-gradient(135deg, var(--coral), #be123c); transform: rotateY(180deg); color: #fff; }
+        .flip-front h3 { font-size: 40px; color: var(--coral); margin-bottom: 20px; }
+        .flip-back h3 { font-size: 45px; font-weight: 900; margin-bottom: 20px; }
+
+        /* SLIDE 3: CANVAS WHEEL SIMULATION */
+        .sim-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; height: 100%; align-items: center; }
+        .sliders-box { background: var(--glass-bg); padding: 50px; border-radius: 24px; border: 1px solid var(--glass-border); }
+        .slider-wrap { margin-bottom: 50px; }
+        .slider-wrap label { font-size: 32px; font-weight: 700; color: #fff; display: flex; justify-content: space-between; margin-bottom: 20px; }
+        input[type="range"] {
+            width: 100%; height: 12px; background: rgba(255,255,255,0.1); border-radius: 10px; outline: none; -webkit-appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 40px; height: 40px; border-radius: 50%; background: var(--gold); cursor: pointer; border: 4px solid #fff; box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+        }
+        .canvas-container { position: relative; width: 100%; height: 600px; background: rgba(0,0,0,0.3); border-radius: 24px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+        #wheelCanvas { width: 100%; height: 100%; display: block; }
+        .warning-text { position: absolute; top: 40px; left: 0; width: 100%; text-align: center; font-size: 40px; font-weight: 900; opacity: 0; transition: opacity 0.3s; text-shadow: 0 5px 15px rgba(0,0,0,1); }
+
+        /* SLIDE 4: TIMELINE */
+        .timeline { display: flex; justify-content: space-between; align-items: flex-start; margin-top: 80px; position: relative; }
+        .timeline::before { content: ''; position: absolute; top: 50px; left: 5%; right: 5%; height: 4px; background: rgba(255,255,255,0.1); z-index: 0; }
+        .step { position: relative; z-index: 1; text-align: center; width: 22%; opacity: 0; transform: translateY(40px); transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .slide.active .step { opacity: 1; transform: translateY(0); }
+        .step-num {
+            width: 100px; height: 100px; margin: 0 auto 30px auto; border-radius: 50%; background: var(--dark-1); border: 4px solid var(--cyan); display: flex; justify-content: center; align-items: center;
+            font-size: 45px; font-weight: 900; color: var(--cyan); box-shadow: 0 0 30px rgba(6, 182, 212, 0.4); transition: all 0.3s;
+        }
+        .step:hover .step-num { background: var(--cyan); color: #fff; transform: scale(1.1); box-shadow: 0 0 50px rgba(6, 182, 212, 0.8); }
+        .step h3 { font-size: 38px; color: #fff; margin-bottom: 15px; }
+        .step p { font-size: 26px; color: var(--text-muted); line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+    <div id="ambient-glow"></div>
+
+    <div id="presentation-container">
+        
+        <header>
+            <div style="font-size: 30px; font-weight: 800; letter-spacing: 2px; color: var(--text-muted);">MASTERCLASS<span style="color:var(--gold);">.AI</span></div>
+            <button class="btn" id="btn-voice" onclick="toggleVoice()">
+                <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                Phát Giọng Đọc
+            </button>
+        </header>
+
+        <div id="slides-area">
+            <!-- SLIDE 1 -->
+            <section class="slide active" id="s1" data-ambient="#06b6d4" data-speech="Chào mừng bạn đến với Master Class. Nắm trọn quyền năng A I, nghệ thuật tạo kỹ năng. Hãy cùng bước vào kỷ nguyên tự động hóa tri thức.">
+                <div class="particles-bg" id="particles"></div>
+                <div style="position: relative; z-index: 10; width: 70%;" class="tilt-card">
+                    <h1 class="title" style="font-size: 90px; margin-bottom: 40px;"><span class="highlight-cyan">NẮM TRỌN QUYỀN NĂNG AI:</span><br>NGHỆ THUẬT TẠO KỸ NĂNG</h1>
+                    <p class="text" style="font-size: 40px;">Đóng gói tri thức, biến câu lệnh phức tạp thành một trợ lý tự động hóa hoàn hảo.</p>
+                </div>
+            </section>
+
+            <!-- SLIDE 2 -->
+            <section class="slide" id="s2" data-ambient="#f43f5e" data-speech="Tại sao phải đóng gói kỹ năng? Làm thủ công sẽ khiến bạn kiệt sức vì lặp đi lặp lại. Tự động hóa bằng kỹ năng giúp chuẩn xác một trăm phần trăm và thiết lập một lần dùng trọn đời.">
+                <h1 class="title">TẠI SAO PHẢI ĐÓNG GÓI KỸ NĂNG?</h1>
+                <p class="text">Lướt chuột qua các thẻ để thấy sự khác biệt giữa <span class="highlight-coral">Thủ Công</span> và <span class="highlight-gold">Tự Động</span></p>
+                <div class="flip-grid">
+                    <div class="flip-card tilt-card">
+                        <div class="flip-inner">
+                            <div class="flip-front">
+                                <svg style="width:100px; fill:var(--coral); margin-bottom:20px;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                                <h3>Nỗi Đau Lặp Lại</h3>
+                                <p class="text" style="font-size: 26px;">Phải copy & paste hàng đoạn prompt dài dòng mỗi ngày.</p>
+                            </div>
+                            <div class="flip-back">
+                                <svg style="width:100px; fill:#fff; margin-bottom:20px;" viewBox="0 0 24 24"><path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/></svg>
+                                <h3>1 Lần Thiết Lập</h3>
+                                <p class="text" style="font-size: 26px; color:#fff;">Tạo Kỹ năng 1 lần, chỉ cần gọi tên là AI tự động chạy quy trình phức tạp.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card tilt-card">
+                        <div class="flip-inner">
+                            <div class="flip-front">
+                                <svg style="width:100px; fill:var(--coral); margin-bottom:20px;" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                                <h3>Sai Lệch Dữ Liệu</h3>
+                                <p class="text" style="font-size: 26px;">Định dạng HTML, JSON, Bảng biểu lúc đúng lúc sai.</p>
+                            </div>
+                            <div class="flip-back">
+                                <svg style="width:100px; fill:#fff; margin-bottom:20px;" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                                <h3>Chuẩn Xác 100%</h3>
+                                <p class="text" style="font-size: 26px; color:#fff;">Trói buộc AI vào khuôn khổ thép. Luôn trả về đúng định dạng yêu cầu.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card tilt-card">
+                        <div class="flip-inner">
+                            <div class="flip-front">
+                                <svg style="width:100px; fill:var(--coral); margin-bottom:20px;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                                <h3>Giới Hạn Cá Nhân</h3>
+                                <p class="text" style="font-size: 26px;">Chỉ mình bạn hiểu logic công việc, khó chuyển giao.</p>
+                            </div>
+                            <div class="flip-back">
+                                <svg style="width:100px; fill:#fff; margin-bottom:20px;" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                                <h3>Đóng Gói Tri Thức</h3>
+                                <p class="text" style="font-size: 26px; color:#fff;">Lưu truyền kinh nghiệm thành tài sản số. Ai dùng kỹ năng cũng ra kết quả như chuyên gia.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 3: CANVAS SIMULATION -->
+            <section class="slide" id="s3" data-ambient="#fbbf24" data-speech="Bánh xe cuộc đời và trí tuệ nhân tạo. Hãy tự tay kéo hai thanh trượt bên trái. Nếu bạn lạm dụng A I mà thiếu kiến thức chuyên môn, bánh xe sẽ sụp đổ. Khi cả hai hòa quyện đỉnh cao, bánh xe sẽ lăn êm đềm thần tốc.">
+                <h1 class="title">BÁNH XE TRI THỨC VÀ AI</h1>
+                <p class="text" style="margin-bottom: 30px;">Cân bằng Nền tảng chuyên môn và Kỹ năng AI để tạo ra <span class="highlight-gold">Hiệu Suất Vô Cực</span></p>
+                <div class="sim-layout">
+                    <div class="sliders-box tilt-card">
+                        <div class="slider-wrap">
+                            <label><span>🧠 Nền tảng Chuyên Môn</span> <span id="v-know" class="highlight-cyan">50</span></label>
+                            <input type="range" id="sl-know" min="10" max="100" value="50">
+                        </div>
+                        <div class="slider-row slider-wrap">
+                            <label><span>⚡ Trình độ dùng AI</span> <span id="v-ai" class="highlight-gold">50</span></label>
+                            <input type="range" id="sl-ai" min="10" max="100" value="50">
+                        </div>
+                        <div class="glass-panel" style="padding: 20px; text-align: center;">
+                            <p class="text" style="font-size: 24px; color: #fff;">Di chuyển thanh trượt để thay đổi hình dạng và tốc độ Bánh xe</p>
+                        </div>
+                    </div>
+                    <div class="canvas-container tilt-card">
+                        <div id="warning-msg" class="warning-text"></div>
+                        <canvas id="wheelCanvas" width="900" height="600"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 4: TIMELINE -->
+            <section class="slide" id="s4" data-ambient="#10b981" data-speech="Bốn bước hoàng kim để đúc kết một kỹ năng xuất chúng. Bước một đặt tên, bước hai mô tả kích hoạt, bước ba hướng dẫn chi tiết và bước bốn là cung cấp ví dụ mẫu chuẩn xác.">
+                <h1 class="title">4 BƯỚC KHỞI TẠO KỸ NĂNG</h1>
+                <p class="text">Trình tự logic khép kín để biến một AI cơ bản thành Trợ lý Chuyên gia</p>
+                <div class="timeline tilt-card" style="padding: 40px; border-radius:24px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="step" style="transition-delay: 0.1s;">
+                        <div class="step-num">1</div>
+                        <h3>ĐẶT TÊN (NAME)</h3>
+                        <p>Định danh ngắn gọn, viết liền không dấu. Ví dụ: <i>chuyen-gia-ke-toan</i>.</p>
+                    </div>
+                    <div class="step" style="transition-delay: 0.3s;">
+                        <div class="step-num">2</div>
+                        <h3>KÍCH HOẠT (DESC)</h3>
+                        <p>Câu lệnh "Công tắc". Ghi rõ người dùng cần gõ gì để AI tự động xuất hiện.</p>
+                    </div>
+                    <div class="step" style="transition-delay: 0.5s;">
+                        <div class="step-num">3</div>
+                        <h3>LUẬT LỆ (INSTR)</h3>
+                        <p>Vai trò, quy trình từng bước, điều cấm kỵ và định dạng dữ liệu bắt buộc.</p>
+                    </div>
+                    <div class="step" style="transition-delay: 0.7s;">
+                        <div class="step-num">4</div>
+                        <h3>VÍ DỤ (EXAMPLE)</h3>
+                        <p>Cung cấp bản mẫu hoàn hảo nhất bạn từng làm để AI sao chép văn phong chuẩn xác.</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 80px; display: flex; justify-content: center;">
+                    <div class="image-container tilt-card" style="width: 800px; height: 250px;">
+                        <img id="custom-img" src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200" alt="Tech Background">
+                        <div class="upload-overlay">
+                            <label class="upload-btn">
+                                📷 Thay ảnh của tôi
+                                <input type="file" accept="image/*" onchange="handleImageUpload(event, 'custom-img')">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <button class="btn" onclick="prevSlide()">
+                <svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg> TRƯỚC
+            </button>
+            <div style="display: flex; gap: 15px;" id="dots-container"></div>
+            <button class="btn" onclick="nextSlide()">
+                SAU <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+            </button>
+        </footer>
+    </div>
+
+<script>
+    // 1. 16:9 AUTO-SCALE LOGIC
+    function scaleContainer() {
+        const container = document.getElementById('presentation-container');
+        const targetRatio = 16 / 9;
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const windowRatio = w / h;
+        let scale = 1;
+
+        if (windowRatio > targetRatio) {
+            // Window is wider than 16:9, fit to height
+            scale = h / 1080;
+        } else {
+            // Window is narrower than 16:9, fit to width
+            scale = w / 1920;
+        }
+        
+        // Apply scale, reducing slightly (95%) to leave a tiny breathing room for the luxury feel
+        container.style.transform = `scale(${scale * 0.95})`;
+    }
+    window.addEventListener('resize', scaleContainer);
+    scaleContainer();
+
+    // 2. MICRO-INTERACTIONS (3D TILT)
+    document.querySelectorAll('.tilt-card').forEach(el => {
+        el.addEventListener('mousemove', e => {
+            const rect = el.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const xc = rect.width / 2;
+            const yc = rect.height / 2;
+            const dx = x - xc;
+            const dy = y - yc;
+            // Dampen the rotation for elegance
+            el.style.transform = `perspective(1500px) rotateY(${dx / 30}deg) rotateX(${-dy / 30}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+        el.addEventListener('mouseleave', () => {
+            el.style.transform = `perspective(1500px) rotateY(0) rotateX(0) scale3d(1, 1, 1)`;
+        });
+    });
+
+    // 3. IMAGE UPLOAD
+    function handleImageUpload(event, imgId) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById(imgId).src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // 4. NAVIGATION & AMBIENT GLOW
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const ambientGlow = document.getElementById('ambient-glow');
+    const dotsContainer = document.getElementById('dots-container');
+
+    // Create dots
+    slides.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.style.cssText = `width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,0.2); cursor:pointer; transition: all 0.3s;`;
+        dot.onclick = () => goToSlide(i);
+        dotsContainer.appendChild(dot);
+    });
+
+    function updateSlides() {
+        slides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === currentSlide);
+            if (i === currentSlide) {
+                ambientGlow.style.background = `radial-gradient(circle at 50% 50%, ${slide.getAttribute('data-ambient')}66 0%, transparent 70%)`;
+            }
+        });
+        
+        Array.from(dotsContainer.children).forEach((dot, i) => {
+            if(i === currentSlide) {
+                dot.style.background = '#fff';
+                dot.style.transform = 'scale(1.5)';
+            } else {
+                dot.style.background = 'rgba(255,255,255,0.2)';
+                dot.style.transform = 'scale(1)';
+            }
+        });
+
+        // Trigger Speech if auto-read was active (optional, omitted to let user control)
+        if(isSpeaking) speakCurrent();
+    }
+
+    function nextSlide() { if(currentSlide < slides.length - 1) { currentSlide++; updateSlides(); } }
+    function prevSlide() { if(currentSlide > 0) { currentSlide--; updateSlides(); } }
+    function goToSlide(i) { currentSlide = i; updateSlides(); }
+    
+    document.addEventListener('keydown', e => {
+        if(e.key === 'ArrowRight') nextSlide();
+        if(e.key === 'ArrowLeft') prevSlide();
+    });
+
+    // Generate Particles for Slide 1
+    const pContainer = document.getElementById('particles');
+    for(let i=0; i<30; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = Math.random() * 20 + 5;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (Math.random() * 10 + 5) + 's';
+        p.style.animationDelay = (Math.random() * 5) + 's';
+        pContainer.appendChild(p);
+    }
+
+    // 5. ACCURATE VIETNAMESE TTS
+    let synth = window.speechSynthesis;
+    let viVoice = null;
+    let isSpeaking = false;
+
+    function initVoices() {
+        const voices = synth.getVoices();
+        // Strictly filter for Vietnamese
+        viVoice = voices.find(v => v.lang.includes('vi') || v.lang.includes('VN'));
+    }
+    
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = initVoices;
+    }
+    initVoices(); // Try immediately just in case
+
+    function toggleVoice() {
+        const btn = document.getElementById('btn-voice');
+        if (isSpeaking) {
+            synth.cancel();
+            isSpeaking = false;
+            btn.classList.remove('active');
+        } else {
+            isSpeaking = true;
+            btn.classList.add('active');
+            speakCurrent();
+        }
+    }
+
+    function speakCurrent() {
+        synth.cancel();
+        if(!isSpeaking) return;
+        
+        const activeSlide = slides[currentSlide];
+        const text = activeSlide.getAttribute('data-speech');
+        if(!text) return;
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        if (viVoice) utterance.voice = viVoice;
+        utterance.lang = 'vi-VN';
+        utterance.rate = 0.9; // Clear, expressive delivery
+        
+        utterance.onend = () => {
+            isSpeaking = false;
+            document.getElementById('btn-voice').classList.remove('active');
+        };
+        utterance.onerror = () => {
+            isSpeaking = false;
+            document.getElementById('btn-voice').classList.remove('active');
+        };
+
+        synth.speak(utterance);
+    }
+
+    // 6. CANVAS SIMULATION: WHEEL OF KNOWLEDGE & AI
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    const slKnow = document.getElementById('sl-know');
+    const slAi = document.getElementById('sl-ai');
+    const valKnow = document.getElementById('v-know');
+    const valAi = document.getElementById('v-ai');
+    const msg = document.getElementById('warning-msg');
+
+    let wheelAngle = 0;
+    let groundOffset = 0;
+    
+    function drawSimulation() {
+        const k = parseInt(slKnow.value);
+        const a = parseInt(slAi.value);
+        
+        valKnow.innerText = k;
+        valAi.innerText = a;
+
+        const diff = Math.abs(k - a);
+        const cw = canvas.width;
+        const ch = canvas.height;
+        const groundY = ch - 150;
+        
+        ctx.clearRect(0, 0, cw, ch);
+
+        // Ground animation speed based on AI level
+        const speed = a / 10;
+        groundOffset = (groundOffset + speed) % 100;
+        
+        // Draw Ground
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(0, groundY, cw, 150);
+        ctx.fillStyle = '#94a3b8';
+        for(let i = -100; i < cw + 100; i += 100) {
+            ctx.fillRect(i - groundOffset, groundY + 20, 50, 10);
+        }
+
+        ctx.save();
+        
+        // Wheel Base Center
+        const cx = cw / 2;
+        let cy = groundY;
+        
+        // Logic branches
+        if (diff > 40 && a > k) {
+            // UNBALANCED: Distorted polygon, red warning
+            msg.innerText = "Lộ cộ, sụp đổ! (Nguy hiểm! AI làm sai mà bạn không nhận biết!)";
+            msg.style.color = "var(--coral)";
+            msg.style.opacity = 1;
+            
+            // Bouncing Math
+            const sides = 5;
+            const r = 100;
+            // Math magic for irregular rolling bump
+            const bounce = Math.abs(Math.sin((wheelAngle * sides) / 2)) * 30;
+            cy -= (r + bounce);
+            
+            ctx.translate(cx, cy);
+            ctx.rotate(wheelAngle);
+            
+            ctx.beginPath();
+            for(let i=0; i<sides; i++) {
+                // Irregular spikes
+                const rad = i % 2 === 0 ? r : r * 0.7;
+                const angle = (i * 2 * Math.PI) / sides;
+                if(i===0) ctx.moveTo(rad * Math.cos(angle), rad * Math.sin(angle));
+                else ctx.lineTo(rad * Math.cos(angle), rad * Math.sin(angle));
+            }
+            ctx.closePath();
+            ctx.strokeStyle = "var(--coral)";
+            ctx.lineWidth = 10;
+            ctx.stroke();
+            
+            // Red aura
+            ctx.shadowColor = "rgba(244, 63, 94, 0.8)";
+            ctx.shadowBlur = 40;
+            ctx.stroke();
+
+        } else if (k >= 80 && a >= 80) {
+            // HIGH MASTERY: Perfect circle, smooth roll, gold aura
+            msg.innerText = "Tuyệt mỹ! Trí tuệ con người dẫn dắt AI = Bánh xe cuộc đời lăn êm đềm";
+            msg.style.color = "var(--gold)";
+            msg.style.opacity = 1;
+            
+            const r = 150;
+            cy -= r;
+            
+            ctx.translate(cx, cy);
+            ctx.rotate(wheelAngle);
+            
+            ctx.beginPath();
+            ctx.arc(0, 0, r, 0, Math.PI * 2);
+            ctx.strokeStyle = "var(--gold)";
+            ctx.lineWidth = 12;
+            
+            // Gold Aura
+            ctx.shadowColor = "rgba(251, 191, 36, 1)";
+            ctx.shadowBlur = 60;
+            ctx.stroke();
+
+            // Spokes
+            ctx.shadowBlur = 0;
+            for(let i=0; i<8; i++){
+                ctx.beginPath();
+                ctx.moveTo(0,0);
+                const angle = (i * Math.PI) / 4;
+                ctx.lineTo(r * Math.cos(angle), r * Math.sin(angle));
+                ctx.strokeStyle = "rgba(251, 191, 36, 0.5)";
+                ctx.lineWidth = 4;
+                ctx.stroke();
+            }
+
+        } else {
+            // AVERAGE OR LOW KNOWLEDGE/LOW AI
+            msg.style.opacity = 0;
+            const r = 60 + ((k+a)/4); // Scales with combined level
+            cy -= r;
+            
+            ctx.translate(cx, cy);
+            ctx.rotate(wheelAngle);
+            
+            ctx.beginPath();
+            ctx.arc(0, 0, r, 0, Math.PI * 2);
+            ctx.strokeStyle = "var(--cyan)";
+            ctx.lineWidth = 8;
+            ctx.stroke();
+
+            // Spokes
+            for(let i=0; i<6; i++){
+                ctx.beginPath();
+                ctx.moveTo(0,0);
+                const angle = (i * Math.PI) / 3;
+                ctx.lineTo(r * Math.cos(angle), r * Math.sin(angle));
+                ctx.strokeStyle = "rgba(6, 182, 212, 0.3)";
+                ctx.lineWidth = 4;
+                ctx.stroke();
+            }
+        }
+        
+        // Center hub
+        ctx.beginPath();
+        ctx.arc(0,0, 15, 0, Math.PI*2);
+        ctx.fillStyle = "#fff";
+        ctx.fill();
+
+        ctx.restore();
+        
+        // Rotate for next frame based on speed and radius
+        const radiusEst = 100;
+        wheelAngle += speed / radiusEst;
+
+        requestAnimationFrame(drawSimulation);
+    }
+
+    // Start Simulation
+    drawSimulation();
+    
+    // Initialize UI
+    updateSlides();
+</script>
+</body>
+</html>
